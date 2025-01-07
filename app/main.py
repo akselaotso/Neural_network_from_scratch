@@ -2,49 +2,46 @@ import numpy as np
 from nnfs.datasets import spiral_data
 from .modules.activation_functions import *
 from .modules.layer import Layer
+from .modules.loss_functions import * 
+from .modules.softmax_crossentropy_class import Softmax_Cross_Entropy
 
 
-def cross_entropy_loss(prediction, true):
-    prediction = np.clip(prediction, 0.0000001, 1 - 0.0000001)
-    return -np.log(prediction[range(len(prediction)), true])
-
-def one_hot_cross_entropy_loss(prediction, true):
-    prediction = np.clip(prediction, 0.0000001, 1 - 0.0000001)
-    return -np.log(np.sum(np.array(prediction) * np.array(true), axis=1))
-
-def accuracy(prediction, true):
+def accuracy_calculator(prediction, true):
     prediction = np.argmax(prediction, axis=1)
     return np.mean(prediction == true)
 
     
 def main():
-    stepsize = 0.001
+    print("Starting progam.\n")
+    stepsize = 0.03
     samples = 100
     classes = 3
     X, y = spiral_data(samples=samples, classes=classes)
 
-    layer1 = Layer(output_count=3, input_count=2, activation_function=ReLu())
+    layer1 = Layer(output_count=64, input_count=2)
+    activation1 = ReLu()
+    layer2 = Layer(output_count=3, input_count=64)
+    loss_function = Softmax_Cross_Entropy()
 
-    for _ in range(100):
-        output = layer1.forward(X)
+    for i in range(int(1e6)):
+        layer1.forward(X)
+        activation1.forward(layer1.output)
+        layer2.forward(activation1.output)
+        loss_function.forward(layer2.output, y)
 
-        loss = cross_entropy_loss(prediction=output, true=y)
-
-        dL_dy = 0
-        dy_da = 0
+        loss_function.backward(loss_function.output, y)
+        layer2.backward(loss_function.gradient, stepsize)
+        activation1.backward(layer2.gradient)
+        layer1.backward(activation1.gradient, stepsize)
         
-        dL_da = dL_dy * dy_da
+        predictions = np.argmax(loss_function.output, axis=1)
+        if len(y.shape) == 2:
+            y = np.argmax(y, axis=1)
+        accuracy = np.mean(predictions == y)
 
-        layer1.backward(dL_da=dL_da, stepsize=stepsize)
-
-        average_loss = np.mean(loss)
-
-        accuracy = accuracy(output, y)
-
-        print(accuracy)
-
-        print(average_loss)
-
+        if not i % 100:
+            print(f'i: {i}, accuracy: {accuracy:.3f}, loss: {np.mean(loss_function.loss):.3f}')
+    
     print("\nProgram complete.")
 
 
