@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "neural-network"
+version = "0.1.0"
+description = "Neural network implemented from scratch"
+authors = ["Otso Aksela <77741670+akselaotso@users.noreply.github.com>"]
+readme = "README.md"
+packages = [
+    {include = "app"},
+]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+numpy = "^2.2.1"
+nnfs = "^0.5.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+main = "app.main:main"
