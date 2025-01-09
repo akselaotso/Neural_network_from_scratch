@@ -4,11 +4,7 @@ from .modules.activation_functions import *
 from .modules.layer import Layer
 from .modules.loss_functions import * 
 from .modules.softmax_crossentropy_class import Softmax_Cross_Entropy
-
-
-def accuracy_calculator(prediction, true):
-    prediction = np.argmax(prediction, axis=1)
-    return np.mean(prediction == true)
+from .utils.accuracy_calculator import accuracy_calculator
 
     
 def main():
@@ -33,15 +29,11 @@ def main():
         layer2.backward(loss_function.gradient, stepsize)
         activation1.backward(layer2.gradient)
         layer1.backward(activation1.gradient, stepsize)
-        
-        predictions = np.argmax(loss_function.output, axis=1)
-        if len(y.shape) == 2:
-            y = np.argmax(y, axis=1)
-        accuracy = np.mean(predictions == y)
 
         if not i % 100:
-            print(f'i: {i}, accuracy: {accuracy:.3f}, loss: {np.mean(loss_function.loss):.3f}')
+            print(f'i: {i}, accuracy: {accuracy_calculator(loss_output=loss_function.output):.3f}, loss: {np.mean(loss_function.loss):.3f}')
     
+    print(f'\nFinal values:\ni: {i}, accuracy: {accuracy_calculator(loss_output=loss_function.output):.3f}, loss: {np.mean(loss_function.loss):.3f}')    
     print("\nProgram complete.")
 
 

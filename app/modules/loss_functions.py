@@ -15,8 +15,10 @@ class Cross_Entropy_Loss(Loss_Function):
         prediction = np.clip(y_pred, 1e-7, 1 - 1e-7)
 
         if len(y.shape) == 1:
+            # take correct index of prediction, this is 0 or 1
             prediction = prediction[range(len(y_pred)), y]
         elif len(y.shape) == 2:
+            # if pred index == y index then 1, otherwise 0
             prediction = np.sum(prediction * y, axis=1)
 
         return -np.log(prediction)
@@ -25,8 +27,8 @@ class Cross_Entropy_Loss(Loss_Function):
         y_hat = np.clip(y_hat, 0.0000001, 1 - 0.0000001)
 
         if len(y.shape) == 1:
+            # convenient one-hot encoding equivalent
             y = np.eye(len(y_hat[0]))[y]
 
         self.gradient =  - (y / y_hat) / len(y_hat)
-        # self.gradient =  - y / y_hat
     
