@@ -1,6 +1,6 @@
 import numpy as np
 
-def accuracy_calculator(loss_output):
+def accuracy_calculator(loss_output, y):
     predictions = np.argmax(loss_output, axis=1)
     
     if len(y.shape) == 2:
