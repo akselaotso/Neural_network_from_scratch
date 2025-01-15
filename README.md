@@ -4,3 +4,4 @@ Neural network with gradient-decent backpropagation from scratch using only NumP
 
 Network reaces accuracy of 0.977 and cross entropy loss 0.083 after 1e6 iterations using gradient decent with fixed stepsize 0.03.
 
+Based on lecture's by Vizuara.
