@@ -9,8 +9,8 @@ from .utils.accuracy_calculator import accuracy_calculator
     
 def main():
     print("Starting progam.\n")
-    initial_stepsize = 0.03
-    stepsize_decay = 1e-6
+    stepsize = initial_stepsize = 0.03
+    stepsize_decay = 0
     samples = 100
     classes = 3
     X, y = spiral_data(samples=samples, classes=classes)
@@ -20,8 +20,9 @@ def main():
     layer2 = Layer(output_count=3, input_count=64)
     loss_function = Softmax_Cross_Entropy()
 
-    for i in range(int(1e6)):
-        stepsize = initial_stepsize / (1  + stepsize_decay * i)
+    for i in range(200000):
+        if stepsize_decay > 0:
+            stepsize = initial_stepsize / (1  + stepsize_decay * i)
 
         layer1.forward(X)
         activation1.forward(layer1.output)
@@ -36,7 +37,7 @@ def main():
         if not i % 100:
             print(f'i: {i}, accuracy: {accuracy_calculator(loss_output=loss_function.output, y=y):.3f}, loss: {np.mean(loss_function.loss):.3f}')
     
-    print(f'\nFinal values:\ni: {i}, accuracy: {accuracy_calculator(loss_output=loss_function.output):.3f}, loss: {np.mean(loss_function.loss):.3f}')    
+    print(f'\nFinal values:\ni: {i}, accuracy: {accuracy_calculator(loss_output=loss_function.output, y = y):.3f}, loss: {np.mean(loss_function.loss):.3f}')    
     print("\nProgram complete.")
 
 
